@@ -42,8 +42,16 @@ Today's presentation is heavily inspired by:
 
 ## ** Anatomy of a makefile**
 
-```{make test make file}
-# Count words.
-isles.dat : books/isles.txt
-	python countwords.py books/isles.txt isles.dat
+```{bash}
+# Makefile structure
+target : dependency
+	action
+```
+
+
+For example: 
+```{bash}
+# Makefile structure
+make_lesson_pres.pdf : knitting_options.R make_lesson_pres.Rmd
+	R CMD BATCH knitting_options.R
 ```
