@@ -1,0 +1,49 @@
+---
+title: Make and Makefiles for workflows
+author: Hannah Holland-Moritz
+date: '`r format(Sys.time(), "%B %d, %Y")`'
+output: 
+  beamer_presentation:
+    theme: "Boadilla"
+    slide_level: 2
+    toc: true
+---
+
+````{r knitr setup, include=FALSE}
+# some setup options for outputing markdown files; feel free to ignore these
+# These are the default options for this report; more information about options here: https://yihui.name/knitr/options/
+knitr::opts_chunk$set(eval = FALSE, # evaluate code chunks
+                      include = TRUE, # include the console output of the code in the final document
+                      echo = TRUE, # include the code that generated the report in the final report
+                      warning = FALSE, # include warnings
+                      message = FALSE, # include console messages
+                      collapse = TRUE, # Merge code blocks and output blocks, if possible.
+                      dpi = 300, # the default figure resolution
+                      fig.dim = c(6, 5.5), # the default figure dimensions
+                      cache = TRUE) # save the calculations so that kniting is faster each time. (Sometimes this option can cause issues and images won't reflect the most recent code changes, if this happens, just delete the *_cache folder and reknit the code.)
+````
+
+# Overview 
+## Resources/Links/Inspiration:
+Today's presentation is heavily inspired by:
+
+1. Sofware Carpentry's lesson in makefile
+   - [https://swcarpentry.github.io/make-novice/](https://swcarpentry.github.io/make-novice)
+
+## Today's Topics
+1. Introduction to Make
+2. 
+
+# Introduction to `make` 
+
+## **Why should we be using makefiles?**
+
+1. Reproducible workflows with minimal brain power
+
+## ** Anatomy of a makefile**
+
+```{make test make file}
+# Count words.
+isles.dat : books/isles.txt
+	python countwords.py books/isles.txt isles.dat
+```
