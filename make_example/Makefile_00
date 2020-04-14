@@ -1,11 +1,9 @@
 
 # Cleaning Data ==================================================================================
 
-# Files from 01_loading_data_and_cleaning_mapping_file.R
+# Files from 01_loading_data_and_cleaning_data.R
 iris.RDS \
-iris.set.RDS \
-iris.ver.RDS \
-iris.vir.RDS: 01_loading_and_cleaning_data.R iris.txt
+iris.set.RDS: 01_loading_and_cleaning_data.R iris.txt
 	R CMD BATCH 01_loading_and_cleaning_data.R
 
 

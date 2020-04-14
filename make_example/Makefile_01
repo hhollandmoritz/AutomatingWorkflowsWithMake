@@ -1,0 +1,24 @@
+.PHONY : figures
+.DEFAULT_GOAL := figures
+
+# Figures ==============================================================================================
+figures: iris_sepal_plot.png \
+setosa_sepal_plot.png
+
+# Cleaning Data ========================================================================================
+
+# Files from 01_loading_data_and_cleaning_data.R
+iris.RDS \
+iris.set.RDS: 01_loading_and_cleaning_data.R iris.txt
+	R CMD BATCH 01_loading_and_cleaning_data.R
+
+
+# Analyses =============================================================================================
+
+# All species together
+iris_sepal_plot.png: 03_all_species.R iris.RDS
+	R CMD BATCH 03_all_species.R
+
+# Setosa
+setosa_sepal_plot.png: 02_setosa.R iris.set.RDS
+	R CMD BATCH 02_setosa.R

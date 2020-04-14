@@ -14,13 +14,9 @@ names(iris) <- c("SepalLength", "SepalWidth", "PetalLength", "PetalWidth", "Spec
 
 #### =================================================================================================== ####
 
-#### Separate data by species
+#### Separate out setosa data
 #### =================================================================================================== ####
 iris.set <- subset(iris, Species == "setosa")
-
-iris.ver <- subset(iris, Species == "versicolor")
-
-iris.vir <- subset(iris, Species == "virginica")
 
 #### =================================================================================================== ####
 
@@ -32,7 +28,5 @@ saveRDS(iris, file = "iris.RDS")
 
 # Save subsetted data
 saveRDS(iris.set, file = "iris.set.RDS")
-saveRDS(iris.ver, file = "iris.ver.RDS")
-saveRDS(iris.vir, file = "iris.vir.RDS")
 
 #### =================================================================================================== ####
