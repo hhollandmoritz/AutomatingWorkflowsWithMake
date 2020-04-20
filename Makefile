@@ -10,7 +10,8 @@ all: knit zip
 knit: knit/make_lesson_pres.pdf
 	@echo "knit the presentation"
 
-knit/make_lesson_pres.pdf: knitting_options.R make_lesson_pres.Rmd pres_figures/*.png
+knit/make_lesson_pres.pdf: knitting_options.R make_lesson_pres.Rmd \
+pres_figures/*.png
 	Rscript knitting_options.R
 	
 # Zip the example folders ==============================================================================
