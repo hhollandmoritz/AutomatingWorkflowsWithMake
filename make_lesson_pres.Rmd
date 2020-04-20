@@ -28,16 +28,16 @@ knitr::opts_chunk$set(eval = FALSE, # evaluate code chunks
 ## Materials 
 You don't have to participate at home, but if you want to participate at home, you will need:
 
->1. To download the make_example file from github [link]
->2. Move the file to a place that you will be able to easily navigate to with the terminal, for example your Desktop
->3. Open your terminal and navigate to that location. 
+1. To download the make_example file from github [(link in Zoom chat)](https://github.com/hhollandmoritz/AutomatingWorkflowsWithMake/blob/master/make_example.zip)
+2. Move the file to a place that you will be able to easily navigate to with the terminal, for example your Desktop
+3. Open your terminal and navigate to that location. 
+ 
+  For example `cd ~/Desktop`
 
-For example `cd ~/Desktop`
-
->4. Use the terminal to unzip the example file, and then move inside of it.
+4. Use the terminal to unzip the example file, and then move inside of it.
 
   `unzip make_example.zip`  
-  `cd ~/Desktop`  
+  `cd ~/make_example`  
 
 ## Resources/Links/Inspiration:
 Today's presentation is heavily inspired by:
@@ -49,33 +49,35 @@ Today's presentation is heavily inspired by:
 
 
 # Why you should care
-## **Scenario 1:**
-You realize you made a mistake in the lab or field and now need to replace your old data with the new, more accurate data. You do so and re-run your analysis. Then you receive data from a collaborator that you've been waiting on for months. Yay! Some of your figures depend on this data and some don't. You updated your code and then re-run the whole thing from start to finish just to be sure. The collaborator tells you that one of the samples in the previous data they sent you was a mistake. You should remove it from the analyses. You now need to run everything again but without this one data point.
- 
-## **Scenario 2:**
-Your advisor or a reviewer asks you to redo an analysis in a slightly different way. You internally groan. Although you have all the code and the change is relatively small, the change is at the very beginning of your computational pipeline. You are going to have to re-run 20 steps one at a time to incorporate the change. Some of the steps take quite a long time to run but others take only a short time, very few of the steps take a convenient amount of time in which you could get something useful done. You spend an entire day of work pressing "enter" and doing small tasks on the side.
+<!-- ## **Scenario 1:** -->
+<!-- You realize you made a mistake in the lab or field and now need to replace your old data with the new, more accurate data. You do so and re-run your analysis. Then you receive data from a collaborator that you've been waiting on for months. Yay! Some of your figures depend on this data and some don't. You updated your code and then re-run the whole thing from start to finish just to be sure. The collaborator tells you that one of the samples in the previous data they sent you was a mistake. You should remove it from the analyses. You now need to run everything again but without this one data point. -->
 
-## **Scenario 3:**
-You make a small change to a script that results in changes to only one of your figures, because you can't remember the exact dependencies of your pipeline, you re-run the whole pipeline to make sure every thing is updated. Or worse, you don't re-run the whole pipeline and one of your statistics is incorrect. You can't understand why you are getting this weird outcome. It takes you months to realize the issue. Or you never do. Oops.
+<!-- ## **Scenario 2:** -->
+<!-- Your advisor or a reviewer asks you to redo an analysis in a slightly different way. You internally groan. Although you have all the code and the change is relatively small, the change is at the very beginning of your computational pipeline. You are going to have to re-run 20 steps one at a time to incorporate the change. Some of the steps take quite a long time to run but others take only a short time, very few of the steps take a convenient amount of time in which you could get something useful done. You spend an entire day of work pressing "enter" and doing small tasks on the side. -->
+
+<!-- ## **Scenario 3:** -->
+<!-- You make a small change to a script that results in changes to only one of your figures, because you can't remember the exact dependencies of your pipeline, you re-run the whole pipeline to make sure every thing is updated. Or worse, you don't re-run the whole pipeline and one of your statistics is incorrect. You can't understand why you are getting this weird outcome. It takes you months to realize the issue. Or you never do. Oops. -->
  
 <!-- ## **Scenario 4:** -->
 <!-- A collaborator asks you for your code so they can build on some of your analyses. You say yes of course, then you realize, they won't be able to run this part of it with out some other part of the pipeline. Or if they run one script (step 4) they will need to run the scripts for step 1 and step 2 (but not step 3) in order for it to work properly. You realize you now have several choices 1) send them all of your code and write them a lengthy email explaining the idiosyncrasies of your pipeline (and hope you don't forget anything), 2) run the analysis for them instead of giving them the code, 3) create a custom analysis script just for their use. To your dismay each of these options will use a lot of time (either you or your collaborator's) even though the initial request was fairly straightforward. -->
 
-## **Why should we be using makefiles?**
+## Why should we be using makefiles?
 
->1. Reproducible analysis with minimal brain input
->2. Self-documenting pipeline
->3. More efficient use of your time and energy
+>1. More efficient use of your time and energy. You can change your analysis pipeline and rerun only the parts of the pipeline that are affected by the change.
+>2. Reproducible, shareable analysis with minimal brain input
+>3. Self-documenting pipeline
 
-## **Challenges of make**
+## Challenges of `make`
 
 >1. Weird rules and idiosyncrasies
 >2. Can have cryptic error messages
 >3. Requires a bit of knowledge about the unix shell
 
-## Today's goal:
+## Today's goals:
 
-Learn to use `make` for your pipelines with minimal background knowledge. 
+>1. Learn how to run `make`. 
+>2. Learn how to write Makefiles 
+>3. Apply that knowledge in a simple R pipeline.
 
 # Introduction to `make` 
 
@@ -90,7 +92,7 @@ Learn to use `make` for your pipelines with minimal background knowledge.
 
 ```
 
-# **How to write makefiles**
+# How to write makefiles
 
 ## **Anatomy of a makefile**
 
@@ -127,7 +129,7 @@ include_graphics("pres_figures/dependency_graph_1.png")
 ### Makefile 
 ```{bash}
 # Makefile structure
-clean_data.txt : clean_data.R raw_data.txt
+clean_data.txt: clean_data.R raw_data.txt
 	R CMD BATCH clean_data.R
 
 ```
@@ -141,7 +143,7 @@ The second line **must** begin with a TAB, not spaces.
 ### Action lines must begin with tab
 ```{bash}
 # Makefile structure
-clean_data.txt : clean_data.R raw_data.txt
+clean_data.txt: clean_data.R raw_data.txt
 	R CMD BATCH clean_data.R # This line starts with TAB
 	
 ```
@@ -154,15 +156,15 @@ The first line must be on one line from the computer's perspective. But you can 
 
 ### Without a line break
 ```{bash}
-Figure_01.pdf fig_01_data.RDS: make_fig_01.R clean_data.txt
-	R CMD BATCH make_fig_01.R
+clean_data.txt: clean_data.R raw_data.txt
+	R CMD BATCH clean_data.R 
 ```	
 
 ### With a line break
 ```{bash}
-Figure_01.pdf \ 
-fig_01_data.RDS: make_fig_01.R clean_data.txt
-	R CMD BATCH make_fig_01.R
+clean_data.txt: clean_data.R \
+raw_data.txt
+	R CMD BATCH clean_data.R 
 ```	
 
 ## Important Syntax:
@@ -224,6 +226,13 @@ Makefiles only run a step if the dependencies have been updated (i.e. if their t
 R CMD BATCH 01_loading_and_cleaning_data.R
 ```
 
+***
+### The first time you run
+```{bash}
+[you@localhost make_example]$ make
+R CMD BATCH 01_loading_and_cleaning_data.R
+```
+
 ### The second time you run
 ```{bash}
 [you@localhost make_example]$ make
@@ -270,14 +279,11 @@ Any other cryptic errors, may be the result of a bug in your script. You can che
 
 ## Errors Summary:
 
->1. "missing seperator"" --> check your tabs, linebreaks, and spaces 
+>1. "missing seperator" --> check your tabs, linebreaks, and spaces 
 >2. "Command not found" --> Is your action line something that can be run in the terminal?
 >3. Other error --> Check your script for bugs
 
-
-## Important!! Your dependencies *must not* be circular
-
-If any of your dependencies are circular (Figure_01 depends on on Figure_02 and vice versa) then your makefile will always run both, regardless of the timestamps and the order it will run them in will be arbitrary.
+## Dealing with Multiple targets
 
 ## Dealing with Multiple targets
 
@@ -294,7 +300,7 @@ include_graphics("pres_figures/dependency_graph.png")
 ### Makefile
 ```{bash}
 # Makefile structure
-clean_data.txt : clean_data.R raw_data.txt
+clean_data.txt: clean_data.R raw_data.txt
 	R CMD BATCH clean_data.R
 
 Figure_01.pdf fig_01_data.RDS: make_fig_01.R clean_data.txt
@@ -305,12 +311,12 @@ Figure_02.pdf fig_02_data.RDS: make_fig_02.R clean_data.txt
 ```
 
 ***
- - By default, `make` will only build the first target and any of its dependencies so you have to specify what you want to create. 
+ - By default, `make` will only run the first target and any of its dependencies so you have to specify what you want to create. 
 
 ### Makefile
 ```{bash}
 # Makefile structure
-clean_data.txt : clean_data.R raw_data.txt
+clean_data.txt: clean_data.R raw_data.txt
 	R CMD BATCH clean_data.R
 
 Figure_01.pdf fig_01_data.RDS: make_fig_01.R clean_data.txt
@@ -332,12 +338,12 @@ Since we don't want to have to type a new command for every figure in our workfl
 
 ### Makefile
 ```{bash}
-.PHONY : figures
+.PHONY: figures
 
-figures : Figure_01.pdf Figure_02.pdf
+figures: Figure_01.pdf Figure_02.pdf
 
 # Makefile structure
-clean_data.txt : clean_data.R raw_data.txt
+clean_data.txt: clean_data.R raw_data.txt
 	R CMD BATCH clean_data.R
 ...
 
@@ -386,6 +392,20 @@ setosa_sepal_plot.png: 02_setosa.R iris.set.RDS
 	R CMD BATCH 02_setosa.R
 ```
 
+## Your turn: Run your makefile
+
+### To create our figures:
+```{bash}
+[you@localhost make_example]$ make figures
+
+
+```
+
+OR
+```{bash}
+[you@localhost make_example]$ make
+```
+
 ## Default targets
 
 Let's say that most often you will be (re)making your figures. You can save yourself some typing by telling `make` explicitly to make figures the default target. `figures` will then be the default target regardless of its position in the makefile. For example:
@@ -402,21 +422,17 @@ setosa_sepal_plot.png
 
 ```
 
-Solution: Makefile_01
 
-## Your turn: Run your makefile
+## Important!! Your dependencies *must not* be circular
 
-### To create our figures:
-```{bash}
-[you@localhost make_example]$ make figures
+If any of your dependencies are circular (Figure_01 depends on on Figure_02 and vice versa) then your makefile will always run both, regardless of the timestamps and the order it will run them in will be arbitrary.
 
-
+```{r, eval = TRUE, echo = FALSE, out.height="60%", fig.align="center"}
+include_graphics("pres_figures/dependency_graph.png")
 ```
 
-OR
-```{bash}
-[you@localhost make_example]$ make
-```
+
+## Other oddities of `make`
 
 ## Other oddities of `make`: Only one-line actions are allowed
 
@@ -462,6 +478,7 @@ Made figures
 
 # Housekeeping and Good Coding Practices
 ## make clean
+## make clean
 Often your workflow produces many files, some of which are temporary and can be removed. It's also fairly common that you might want to force make to rerun all of your analyses from the beginning. This is often taken care of by creating a target called `clean` which removes your unwanted files.
 
 ### `make clean`
@@ -502,18 +519,27 @@ rm -f *.RDS
 
 ## Your turn: Add a clean section to your makefile
 Add a section that removes all files ending in ".png", ".pdf", ".Rout", and "*.RDS" to the iris workflow makefile. Don't forget to add the new section to your list of phony targets.
+ 
+ - Don't forget to add clean to your .Phony section after you are finished
+ 
+### Makefile_02
+```{bash}
+.PHONY : clean figures
+.DEFAULT_GOAL := figures
+```
 
-Solution: Makefile_02
+## Your turn: run make clean
 
 ## Self-documenting makefiles
+## Self-documenting makefiles: makefiles with a help section
 To prevent you from forgetting what each of your phony targets does, you can add a self-generating help section to your makefile. 
 
- - Let's say that everytime we add a new section to our makefile, we write a little about it, prefaced by `##` or some other consistent character pattern. 
+ - Let's say that everytime we add a new section to our makefile, we write a little about it, prefaced by `##`. 
 
 ***
 ### Documentation
 ```{bash}
-.PHONY : figures
+.PHONY : clean figures
 .DEFAULT_GOAL := figures
 
 # Figures =============================================
@@ -530,7 +556,7 @@ clean: remove-figures remove-R-outputs
 ```
 
 ## Self-documenting makefiles
-Then, we can create a new section called "help", that uses the search-and-replace program sed to create documentation. The target `help` will depend on the makefile itself.
+Now we can create a new target called "help", that uses the search-and-replace program `sed` to create documentation. The target `help` will depend on the makefile itself.
 
 ### Documentation
 ```{bash}
@@ -572,3 +598,4 @@ For a more in-depth tutorial on reducing repetition in your makefile see steps 3
 ## Advanced Makefile for an R output
 
 Check out the Makefile for the make_example_advanced folder for an example of a more advanced makefile that deals with directory structures. 
+# Thanks!
